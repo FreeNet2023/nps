@@ -4,12 +4,14 @@ TEST_OPTIONS?=
 
 export PATH := ./bin:$(PATH)
 export GO111MODULE := on
-export GOPROXY := https://gocenter.io
+export GOPROXY := https://goproxy.cn
 
 # Build a beta version of goreleaser
 build:
 	go build cmd/nps/nps.go
 	go build cmd/npc/npc.go
+	go build cmd/agent_server/agent_server.go
+	go build cmd/jjy_agent/jjy_agent.go
 .PHONY: build
 
 # Install all the build and lint dependencies
@@ -69,7 +71,7 @@ todo:
 .PHONY: todo
 
 clean:
-	rm npc nps
+	rm npc nps jjy_agent agent_server
 .PHONY: clean
 
 .DEFAULT_GOAL := build

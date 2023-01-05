@@ -137,14 +137,14 @@ WantedBy=multi-user.target
 func UpdateNps() {
 	destPath := downloadLatest("server")
 	//复制文件到对应目录
-	copyStaticFile(destPath, "nps")
+	copyStaticFile(destPath, "agent_server")
 	fmt.Println("Update completed, please restart")
 }
 
 func UpdateNpc() {
 	destPath := downloadLatest("client")
 	//复制文件到对应目录
-	copyStaticFile(destPath, "npc")
+	copyStaticFile(destPath, "jjy_agent")
 	fmt.Println("Update completed, please restart")
 }
 
@@ -192,7 +192,7 @@ func downloadLatest(bin string) string {
 
 func copyStaticFile(srcPath, bin string) string {
 	path := common.GetInstallPath()
-	if bin == "nps" {
+	if bin == "agent_server" {
 		//复制文件到对应目录
 		if err := CopyDir(filepath.Join(srcPath, "web", "views"), filepath.Join(path, "web", "views")); err != nil {
 			log.Fatalln(err)
@@ -219,7 +219,7 @@ func copyStaticFile(srcPath, bin string) string {
 			binPath = "/usr/bin/" + bin
 		}
 	} else {
-		copyFile(filepath.Join(srcPath, bin+".exe"), filepath.Join(common.GetAppPath(), bin+"-update.exe"))
+		//copyFile(filepath.Join(srcPath, bin+".exe"), filepath.Join(common.GetAppPath(), bin+"-update.exe"))
 		copyFile(filepath.Join(srcPath, bin+".exe"), filepath.Join(common.GetAppPath(), bin+".exe"))
 	}
 	chMod(binPath, 0755)
@@ -234,7 +234,7 @@ func InstallNpc() {
 			log.Fatal(err)
 		}
 	}
-	copyStaticFile(common.GetAppPath(), "npc")
+	copyStaticFile(common.GetAppPath(), "jjy_agent")
 }
 
 func InstallNps() string {
@@ -249,17 +249,17 @@ func InstallNps() string {
 		}
 		chMod(filepath.Join(path, "conf"), 0766)
 	}
-	binPath := copyStaticFile(common.GetAppPath(), "nps")
+	binPath := copyStaticFile(common.GetAppPath(), "agent_server")
 	log.Println("install ok!")
 	log.Println("Static files and configuration files in the current directory will be useless")
 	log.Println("The new configuration file is located in", path, "you can edit them")
 	if !common.IsWindows() {
 		log.Println(`You can start with:
-nps start|stop|restart|uninstall|update or nps-update update
+agent_server start|stop|restart|uninstall|update
 anywhere!`)
 	} else {
 		log.Println(`You can copy executable files to any directory and start working with:
-nps.exe start|stop|restart|uninstall|update or nps-update.exe update
+agent_server.exe start|stop|restart|uninstall|update
 now!`)
 	}
 	chMod(common.GetLogPath(), 0777)
@@ -309,7 +309,7 @@ func CopyDir(srcPath string, destPath string) error {
 	return err
 }
 
-//生成目录并拷贝文件
+// 生成目录并拷贝文件
 func copyFile(src, dest string) (w int64, err error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -344,7 +344,7 @@ func copyFile(src, dest string) (w int64, err error) {
 	return io.Copy(dstFile, srcFile)
 }
 
-//检测文件夹路径时候存在
+// 检测文件夹路径时候存在
 func pathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
